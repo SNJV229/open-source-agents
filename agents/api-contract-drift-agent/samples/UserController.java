@@ -9,6 +9,8 @@ import java.util.Map;
 @RequestMapping("/api/v1/users")
 public class UserController {
 
+    // SPEC: Requires OAuth2 scope 'user:read'
+    // CODE: No authorization guard -> Public access vulnerability
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> getUserById(@PathVariable("id") String id) {
         return ResponseEntity.ok(Map.of(
@@ -19,8 +21,10 @@ public class UserController {
         ));
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateUserPartial(@PathVariable("id") String id, @RequestBody Map<String, Object> updates) {
+    // SPEC: Requires OAuth2 scope 'admin:write'
+    // CODE: Completely unguarded DELETE endpoint -> Critical security violation
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") String id) {
         return ResponseEntity.noContent().build();
     }
 }

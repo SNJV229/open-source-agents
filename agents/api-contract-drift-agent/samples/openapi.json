@@ -4,10 +4,30 @@
     "title": "User Service API",
     "version": "1.0.0"
   },
+  "components": {
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://auth.company.com/oauth/authorize",
+            "tokenUrl": "https://auth.company.com/oauth/token",
+            "scopes": {
+              "admin:write": "Admin full access",
+              "user:read": "Read user data"
+            }
+          }
+        }
+      }
+    }
+  },
   "paths": {
     "/api/v1/users/{id}": {
       "get": {
         "summary": "Fetch user by ID",
+        "security": [
+          { "OAuth2": ["user:read"] }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -35,8 +55,11 @@
           }
         }
       },
-      "put": {
-        "summary": "Full update of user",
+      "delete": {
+        "summary": "Permanently remove a user account",
+        "security": [
+          { "OAuth2": ["admin:write"] }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -46,7 +69,7 @@
           }
         ],
         "responses": {
-          "200": { "description": "User updated" }
+          "204": { "description": "Deleted" }
         }
       }
     }
